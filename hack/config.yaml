@@ -1,0 +1,41 @@
+
+# CLI tool, only in development environment.
+# https://goframe.org/pages/viewpage.action?pageId=3673173
+gfcli:
+  docker:
+    build: "-a amd64 -s linux -p temp -ew"
+    tagPrefixes:
+      - my.image.pub/my-app
+
+  gen:
+    dao:
+    - link:     "mysql:root:123456@tcp(192.168.0.110:3306)/hiolabsDB?loc=Local&parseTime=true"
+      tables:   " hiolabs_show_settings,
+                  hiolabs_admin,
+                  hiolabs_address,
+                  hiolabs_freight_template_group,
+                  hiolabs_category,
+                  hiolabs_cart,
+                  hiolabs_specification,
+                  hiolabs_keywords,
+                  hiolabs_except_area_detail,
+                  hiolabs_ad,
+                  hiolabs_formid,
+                  hiolabs_region,
+                  hiolabs_goods_gallery,
+                  hiolabs_goods_specification,
+                  hiolabs_except_area,
+                  hiolabs_settings,
+                  hiolabs_order_express,
+                  hiolabs_user,
+                  hiolabs_shipper,
+                  hiolabs_product,
+                  hiolabs_search_history,
+                  hiolabs_order_goods,
+                  hiolabs_goods,
+                  hiolabs_notice,
+                  hiolabs_freight_template,
+                  hiolabs_footprint,
+                  hiolabs_order,
+                  hiolabs_freight_template_detail"
+      jsonCase: "CamelLower"

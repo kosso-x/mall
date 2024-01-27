@@ -1,0 +1,10 @@
+weixin:
+  auth_url: "https://api.weixin.qq.com/sns/jscode2session"
+  token_url: "https://api.weixin.qq.com/cgi-bin/token"
+  appid: 'wxf35f32718a95d92d'                              # 小程序 appid
+  secret: 'fb07bf7dc4cf86623292b3dc74dcef62'               # 小程序密钥
+  mch_id: '15988888888'                                    # 商户帐号ID
+  partner_key: 'asdasdasdasdasdasdasd'                     # 微信支付密钥
+  notify_url: 'https://www.您的域名.com/api/pay/notify'    # 微信支付异步通知
+  openai_g_type: "authorization_code"
+  token_g_type: "client_credential"
