@@ -37,7 +37,7 @@ var hiolabsKeywordsColumns = HiolabsKeywordsColumns{
 	IsDefault: "is_default",
 	IsShow:    "is_show",
 	SortOrder: "sort_order",
-	SchemeUrl: "scheme _url",
+	SchemeUrl: "scheme_url",
 	Id:        "id",
 	Type:      "type",
 }

@@ -9,7 +9,7 @@ import (
 
 func (c *ControllerV1) AddressSave(ctx context.Context, req *v1.AddressSaveReq) (res *v1.AddressSaveRes, err error) {
 	address := req.AddressSave
-	r, _ := service.Address().Save(ctx, address)
+	r, err := service.Address().Save(ctx, address)
 	res = &v1.AddressSaveRes{
 		AddressSaveRes: r,
 	}

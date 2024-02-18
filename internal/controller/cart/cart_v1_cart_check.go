@@ -13,7 +13,7 @@ func (c *ControllerV1) CartCheck(ctx context.Context, req *v1.CartCheckReq) (res
 		ProductIds: req.ProductIds,
 		IsChecked:  req.IsChecked,
 	}
-	r, _ := service.Cart().Check(ctx, check)
+	r, err := service.Cart().Check(ctx, check)
 
 	res = &v1.CartCheckRes{
 		CartAddRes: &r,

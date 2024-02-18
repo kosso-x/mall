@@ -8,7 +8,7 @@ import (
 )
 
 func (c *ControllerV1) GoodsCount(ctx context.Context, req *v1.GoodsCountReq) (res *v1.GoodsCountRes, err error) {
-	count, _ := service.Goods().Count(ctx)
+	count, err := service.Goods().Count(ctx)
 	res = &v1.GoodsCountRes{
 		GoodsCount: count,
 	}

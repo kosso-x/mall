@@ -8,7 +8,7 @@ import (
 )
 
 func (c *ControllerV1) AppInfo(ctx context.Context, req *v1.AppInfoReq) (res *v1.AppInfoRes, err error) {
-	r, _ := service.Home().Info(ctx)
+	r, err := service.Home().Info(ctx)
 
 	res = &v1.AppInfoRes{
 		Channel:      &r.Channel,

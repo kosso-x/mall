@@ -16,7 +16,7 @@ func (c *ControllerV1) CartAdd(ctx context.Context, req *v1.CartAddReq) (res *v1
 		ProductId: req.ProductId,
 	}
 
-	r, _ := service.Cart().Add(ctx, req_body)
+	r, err := service.Cart().Add(ctx, req_body)
 
 	res = &v1.CartAddRes{
 		CartAddRes: &r,

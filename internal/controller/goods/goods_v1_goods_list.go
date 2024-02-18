@@ -8,7 +8,7 @@ import (
 )
 
 func (c *ControllerV1) GoodsList(ctx context.Context, req *v1.GoodsListReq) (res *v1.GoodsListRes, err error) {
-	r, _ := service.Goods().List(ctx)
+	r, err := service.Goods().List(ctx)
 	res = &v1.GoodsListRes{
 		GoodsListInfo: &r,
 	}

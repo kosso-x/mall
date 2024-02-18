@@ -28,11 +28,11 @@ type ShortNotice struct {
 }
 
 type CategoryGood struct {
-	Id        int    `json:"id"`
-	Name      string `json:"name"`
-	Banner    string `json:"banner"`
-	Height    int    `json:"height"`
-	GoodsList []GoodsList
+	Id        int         `json:"id"`
+	Name      string      `json:"name"`
+	Banner    string      `json:"banner"`
+	Height    int         `json:"height"`
+	GoodsList []GoodsList `json:"goodsList"`
 }
 
 type GoodsList struct {
@@ -42,4 +42,11 @@ type GoodsList struct {
 	Goods_number     int     `json:"goods_number"`
 	Name             string  `json:"name"`
 	Min_retail_price float32 `json:"min_retail_price"`
+}
+
+type ImageUrlReq struct {
+	Scene      int    `json:"scene"`
+	Page       string `json:"page"`
+	Width      int    `json:"width"`
+	Check_path bool   `json:"check_path"`
 }

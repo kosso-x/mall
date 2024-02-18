@@ -66,7 +66,7 @@ func (s *sGoods) Share(ctx context.Context, id int) (share *model.GoodsShare, er
 	return
 }
 
-func (s *sGoods) GetGoods(ctx context.Context, id int) (goods *entity.HiolabsGoods, err error) {
+func (s *sGoods) GetGoods(ctx context.Context, id int) (goods *model.HGoods, err error) {
 	err = dao.HiolabsGoods.Ctx(ctx).Where("id = ? and is_delete = ?", id, 0).Scan(&goods)
 	if err != nil {
 		return nil, gerror.New("get goods error")
@@ -75,7 +75,7 @@ func (s *sGoods) GetGoods(ctx context.Context, id int) (goods *entity.HiolabsGoo
 	return
 }
 
-func (s *sGoods) GetGallery(ctx context.Context, id int) (gallerys []entity.HiolabsGoodsGallery, err error) {
+func (s *sGoods) GetGallery(ctx context.Context, id int) (gallerys []model.HGoodsGallery, err error) {
 	err = dao.HiolabsGoodsGallery.Ctx(ctx).Where("goods_id = ? and is_delete = ?", id, 0).OrderAsc("sort_order").Scan(&gallerys)
 	if err != nil {
 		return nil, gerror.New("get goods gallery error")
@@ -109,7 +109,7 @@ func (s *sGoods) GetSpecification(ctx context.Context, id int) (gs *model.GoodsS
 	return
 }
 
-func (s *sGoods) GetProduct(ctx context.Context, id int) (products []entity.HiolabsProduct, err error) {
+func (s *sGoods) GetProduct(ctx context.Context, id int) (products []model.HProduct, err error) {
 	dao.HiolabsProduct.Ctx(ctx).Where("goods_id = ? AND is_delete = ?", id, 0).Scan(&products)
 	if err != nil {
 		return nil, gerror.New("get goods products error")

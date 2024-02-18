@@ -9,6 +9,7 @@ import (
 	"mall/internal/dao"
 	"mall/internal/model"
 	"mall/internal/model/entity"
+	"mall/internal/packed"
 	"mall/internal/service"
 	"time"
 
@@ -60,7 +61,7 @@ func (s *sLogin) AuthLogin(ctx context.Context, code string) (res *model.AuthLog
 	s.UpdateLogin(ctx, h_user)
 
 	// 微信远程登录 token
-	s.GetAuthToken(ctx)
+	packed.GetAuthToken(ctx)
 	// 微信本地登录token
 
 	sing_user := &model.SignTokenUser{
@@ -70,13 +71,21 @@ func (s *sLogin) AuthLogin(ctx context.Context, code string) (res *model.AuthLog
 		Iat:         int(time.Now().Unix()),
 	}
 	tokenString, err := s.GenerateToken(ctx, sing_user)
+	if err != nil {
+		return
+	}
+
+	nickname, err := gbase64.DecodeToString(h_user.Nickname)
+	if err != nil {
+		return
+	}
 
 	res = &model.AuthLogin{
 		Token: tokenString,
 		UserInfo: model.LoginUserInfo{
 			Id:       int(h_user.Id),
 			Username: h_user.Username,
-			Nickname: h_user.Nickname,
+			Nickname: nickname,
 			Avatar:   h_user.Avatar,
 		},
 		Is_new: Is_new,
@@ -112,10 +121,13 @@ func (s *sLogin) WeixinAuth(code string) (res *model.WxOpenAi, err error) {
 	body_json := resp.ReadAllString()
 
 	if j, err := gjson.DecodeToJson(body_json); err != nil {
-		panic(err)
+		return nil, err
 	} else {
 		if err := j.Scan(&res); err != nil {
-			panic(err)
+			return nil, err
+		}
+		if res.Errmsg != "" {
+			return nil, gerror.New(res.Errmsg)
 		}
 	}
 	return
@@ -161,36 +173,6 @@ func (s *sLogin) UpdateLogin(ctx context.Context, user *entity.HiolabsUser) (err
 
 	if err != nil {
 		return gerror.New("更新登录信息失败")
-	}
-
-	return
-}
-
-func (s *sLogin) GetAuthToken(ctx context.Context) (res *model.WxToken, err error) {
-	config := g.Cfg("weixin_auth")
-	gctx := gctx.New()
-	token_g_type, _ := config.Get(gctx, "weixin.token_g_type")
-	secret, _ := config.Get(gctx, "weixin.secret")
-	appid, _ := config.Get(gctx, "weixin.appid")
-	genurl, _ := config.Get(gctx, "weixin.token_url")
-
-	url := fmt.Sprintf("%s?grant_type=%s&secret=%s&appid=%s", genurl, token_g_type, secret, appid)
-	resp, err := g.Client().Get(gctx, url)
-
-	if err != nil {
-		glog.Errorf(gctx, "request %v error", url)
-		return
-	}
-
-	defer resp.Close()
-	body_json := resp.ReadAllString()
-
-	if j, err := gjson.DecodeToJson(body_json); err != nil {
-		panic(err)
-	} else {
-		if err := j.Scan(&res); err != nil {
-			panic(err)
-		}
 	}
 
 	return

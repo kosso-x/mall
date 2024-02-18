@@ -1,0 +1,4 @@
+default:
+  root_path: "/go_pros/src/mall"
+  static_path: "/go_pros/src/mall/resource/public"
+  avatar_path: "/resource/static/upload/avatar"

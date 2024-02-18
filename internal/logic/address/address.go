@@ -2,15 +2,14 @@ package address
 
 import (
 	"context"
-	"fmt"
 	"mall/internal/cmd"
 	"mall/internal/dao"
 	"mall/internal/model"
+	"mall/internal/packed"
 	"mall/internal/service"
 
 	"github.com/gogf/gf/v2/errors/gerror"
 	"github.com/gogf/gf/v2/frame/g"
-	"github.com/gogf/gf/v2/util/gconv"
 )
 
 type (
@@ -80,17 +79,19 @@ func (s *sAddress) List(ctx context.Context) (res model.AddressList, err error) 
 }
 
 func (s *sAddress) GetRegion(ctx context.Context, res *model.AddressDetail) (err error) {
-	province_name, _ := dao.HiolabsRegion.Ctx(ctx).Fields("name").Where("id = ?", res.Province_id).Value()
-	city_name, _ := dao.HiolabsRegion.Ctx(ctx).Fields("name").Where("id = ?", res.City_id).Value()
-	district_name, err := dao.HiolabsRegion.Ctx(ctx).Fields("name").Where("id = ?", res.District_id).Value()
-
-	if err != nil {
-		return gerror.New("get address region error")
+	region := &model.RegionIds{
+		Country_id:  res.Country_id,
+		Province_id: res.Province_id,
+		City_id:     res.City_id,
+		District_id: res.District_id,
+		Full_region: "",
 	}
 
-	res.Province_name = gconv.String(province_name)
-	res.City_name = gconv.String(city_name)
-	res.District_name = gconv.String(district_name)
-	res.Full_region = fmt.Sprintf("%s%s%s", province_name, city_name, district_name)
+	values := packed.GetFullRegion(ctx, region)
+
+	res.Province_name = values.Province_name
+	res.City_name = values.City_name
+	res.District_name = values.District_name
+	res.Full_region = values.Full_region
 	return
 }

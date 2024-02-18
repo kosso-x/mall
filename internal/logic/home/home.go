@@ -4,6 +4,7 @@ import (
 	"context"
 	"mall/internal/dao"
 	"mall/internal/model"
+	"mall/internal/packed"
 	"mall/internal/service"
 
 	"github.com/gogf/gf/errors/gerror"
@@ -86,7 +87,6 @@ func (s *sHome) InfoShortNotice(ctx context.Context) (res []model.ShortNotice, e
 		Ctx(ctx).
 		Fields("content").
 		Where("is_delete = ?", 0).
-		Order("sort_order asc").
 		Scan(&res)
 
 	if err != nil {
@@ -100,7 +100,7 @@ func (s *sHome) InfoCategoryGood(ctx context.Context) (res []model.CategoryGood,
 	err = dao.
 		HiolabsCategory.
 		Ctx(ctx).
-		Fields("id", "name", "img_url", "p_height").
+		Fields("id", "name", "img_url as banner", "p_height as height").
 		Where("parent_id = ? and is_show = ?", 0, 1).
 		Order("sort_order asc").
 		Scan(&res)
@@ -143,6 +143,19 @@ func (s *sHome) InfoCartCount(ctx context.Context) (res int, err error) {
 
 	if err != nil {
 		return 0, gerror.New("get carts-count error")
+	}
+
+	return
+}
+
+func (s *sHome) Encode(ctx context.Context, goodsId int) (text string, err error) {
+	token_res, err := packed.GetAuthToken(ctx)
+	if err != nil {
+		return "", err
+	}
+	text, err = packed.GetImageUrl(ctx, token_res, goodsId)
+	if err != nil {
+		return "", err
 	}
 
 	return

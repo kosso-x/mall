@@ -19,6 +19,7 @@ type (
 		InfoCategoryGood(ctx context.Context) (res []model.CategoryGood, err error)
 		InfoGoods(ctx context.Context, category_id int) (res []model.GoodsList, err error)
 		InfoCartCount(ctx context.Context) (res int, err error)
+		Encode(ctx context.Context, GoodsId int) (text string, err error)
 	}
 )
 

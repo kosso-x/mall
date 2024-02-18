@@ -6,6 +6,7 @@ import (
 	"mall/internal/dao"
 	"mall/internal/model"
 	"mall/internal/model/entity"
+	"mall/internal/packed"
 	"mall/internal/service"
 	"time"
 
@@ -132,6 +133,12 @@ func (s *sCart) CheckOut(ctx context.Context, checkout *model.CartCheckoutReq) (
 		freight      float32
 		freight_temp *entity.HiolabsFreightTemplate
 	)
+
+	checked_address, err := s.GetCartAddress(ctx, checkout.AddressId)
+	if err != nil {
+		return res, err
+	}
+
 	for _, v := range carts.CartList {
 		if v.Checked == 1 {
 			dao.HiolabsFreightTemplate.Ctx(ctx).Where("id = ?", v.Freight_template_id).Scan(&freight_temp)
@@ -140,7 +147,7 @@ func (s *sCart) CheckOut(ctx context.Context, checkout *model.CartCheckoutReq) (
 	}
 
 	res = model.CartCheckout{
-		CheckedAddress:   0,
+		CheckedAddress:   *checked_address,
 		FreightPrice:     freight,
 		CheckedGoodsList: carts.CartList,
 		GoodsTotalPrice:  carts.CartTotal.GoodsAmount,
@@ -232,5 +239,30 @@ func (s *sCart) CurrentCart(ctx context.Context, product *entity.HiolabsProduct,
 		})
 		dao.HiolabsCart.Ctx(ctx).Where("user_id = ? and product_id = ? and is_delete = ? and is_fast = ?", cmd.CurrentUser.Id, product.Id, 0, 0).Scan(&cart)
 	}
+	return
+}
+
+func (s *sCart) GetCartAddress(ctx context.Context, address_id int) (res *model.CartAddressInfo, err error) {
+	err = dao.HiolabsAddress.Ctx(ctx).Where("is_default = ? and user_id = ? and is_delete = ?", 1, cmd.CurrentUser.Id, 0).Scan(&res)
+	if err != nil {
+		return nil, err
+	}
+
+	g.Dump("resssssssssssss")
+	g.Dump(res)
+
+	region := &model.RegionIds{
+		Country_id:  res.Country_id,
+		Province_id: res.Province_id,
+		City_id:     res.City_id,
+		District_id: res.District_id,
+		Full_region: "",
+	}
+	values := packed.GetFullRegion(ctx, region)
+	res.Province_name = values.Province_name
+	res.City_name = values.City_name
+	res.District_name = values.District_name
+	res.Full_region = values.Full_region
+
 	return
 }

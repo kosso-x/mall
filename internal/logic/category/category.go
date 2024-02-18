@@ -5,6 +5,7 @@ import (
 	"mall/internal/dao"
 	"mall/internal/model"
 	"mall/internal/model/do"
+	"mall/internal/packed"
 	"mall/internal/service"
 
 	"github.com/gogf/gf/errors/gerror"
@@ -48,41 +49,45 @@ func (s *sCategory) One(ctx context.Context, id int) (current model.CurrentCateg
 	return
 }
 
-func (s *sCategory) CurrentList(ctx context.Context, Id, Page, Size int) (res model.CategoryCurrentList, err error) {
-	var goods []model.ShortGoods
-	count, err := dao.
-		HiolabsGoods.
-		Ctx(ctx).
-		Where("is_on_sale = ? and is_delete = ? and category_id = ?", 1, 0, Id).
-		Count()
+func (s *sCategory) CurrentList(ctx context.Context, id, page, size int) (res model.CategoryCurrentList, err error) {
+	var (
+		goods []model.ShortGoods
+		count int
+	)
 
-	if err != nil {
-		return res, gerror.New("get category-goods-count error")
-	}
+	if id == 0 {
+		err = dao.
+			HiolabsGoods.
+			Ctx(ctx).
+			Fields("id", "name", "goods_brief", "min_retail_price", "list_pic_url", "goods_number").
+			Where("is_on_sale = ? and is_delete = ?", 1, 0).
+			Limit((page-1)*size, page*size).
+			Order("sort_order asc").
+			ScanAndCount(&goods, &count, false)
 
-	dao.
-		HiolabsGoods.
-		Ctx(ctx).
-		Fields("name", "id", "goods_brief", "min_retail_price", "list_pic_url", "goods_number").
-		Where("is_on_sale = ? and is_delete = ? and category_id = ?", 1, 0, Id).
-		Order("sort_order asc").
-		Scan(&goods)
-
-	r1 := count / Size
-	r2 := count % Size
-	var div int
-
-	if r2 > 0 {
-		div = r1 + 1
+		if err != nil {
+			return res, gerror.New("get all-category-goods-count error")
+		}
 	} else {
-		div = r1
+		err = dao.
+			HiolabsGoods.
+			Ctx(ctx).
+			Fields("id", "name", "goods_brief", "min_retail_price", "list_pic_url", "goods_number").
+			Where("is_on_sale = ? and is_delete = ? and category_id = ?", 1, 0, id).
+			Limit((page-1)*size, page*size).
+			Order("sort_order asc").
+			ScanAndCount(&goods, &count, false)
+
+		if err != nil {
+			return res, gerror.New("get category-goods-count error")
+		}
 	}
 
 	res = model.CategoryCurrentList{
 		Count:       count,
-		TotalPages:  div,
-		PageSize:    Size,
-		CurrentPage: Page,
+		TotalPages:  packed.TotalPages(ctx, count, size),
+		PageSize:    size,
+		CurrentPage: page,
 		Data:        goods,
 	}
 

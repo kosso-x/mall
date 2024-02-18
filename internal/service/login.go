@@ -12,10 +12,8 @@ type (
 		WeixinAuth(code string) (res *model.WxOpenAi, err error)
 		UserRegister(ctx context.Context, user *entity.HiolabsUser, openid string) (err error)
 		UpdateLogin(ctx context.Context, user *entity.HiolabsUser) (err error)
-		GetAuthToken(ctx context.Context) (res *model.WxToken, err error)
 		GenerateToken(ctx context.Context, user *model.SignTokenUser) (token string, err error)
 		StorageToken(ctx context.Context, user *model.SignTokenUser, token string) (err error)
-		// UpdateToken(ctx context.Context, user *model.AuthLogin) (err error)
 	}
 )
 

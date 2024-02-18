@@ -8,7 +8,7 @@ import (
 )
 
 func (c *ControllerV1) AddressGet(ctx context.Context, req *v1.AddressGetReq) (res *v1.AddressGetRes, err error) {
-	r, _ := service.Address().List(ctx)
+	r, err := service.Address().List(ctx)
 	res = &v1.AddressGetRes{
 		AddressList: &r,
 	}

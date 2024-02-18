@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"mall/internal/model"
-	"mall/internal/model/entity"
 )
 
 type (
@@ -12,10 +11,10 @@ type (
 		Detail(ctx context.Context, id int) (detail *model.GoodsDetail, err error)
 		List(ctx context.Context) (res model.GoodsListInfo, err error)
 		Share(ctx context.Context, id int) (share *model.GoodsShare, err error)
-		GetGoods(ctx context.Context, id int) (goods *entity.HiolabsGoods, err error)
-		GetGallery(ctx context.Context, id int) (gallerys []entity.HiolabsGoodsGallery, err error)
+		GetGoods(ctx context.Context, id int) (goods *model.HGoods, err error)
+		GetGallery(ctx context.Context, id int) (gallerys []model.HGoodsGallery, err error)
 		GetSpecification(ctx context.Context, id int) (values *model.GoodsSpecification, err error)
-		GetProduct(ctx context.Context, id int) (products []entity.HiolabsProduct, err error)
+		GetProduct(ctx context.Context, id int) (products []model.HProduct, err error)
 	}
 )
 

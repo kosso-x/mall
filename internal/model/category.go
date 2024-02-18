@@ -25,8 +25,8 @@ type CategoryCurrentList struct {
 }
 
 type ShortGoods struct {
-	Name             string  `json:"name"`
 	Id               int     `json:"id"`
+	Name             string  `json:"name"`
 	Goods_brief      string  `json:"goods_brief"`
 	Min_retail_price float32 `json:"min_retail_price"`
 	List_pic_url     string  `json:"list_pic_url"`

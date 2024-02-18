@@ -11,6 +11,8 @@ type WxOpenAi struct {
 type WxToken struct {
 	Access_token string
 	Expires_in   int
+	Errcode      int
+	Errmsg       string
 }
 
 type AuthLogin struct {

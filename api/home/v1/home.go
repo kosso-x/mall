@@ -17,3 +17,13 @@ type AppInfoRes struct {
 	CategoryList *[]model.CategoryGood  `json:"categoryList"`
 	CartCount    *int                   `json:"cartCount"`
 }
+
+type GetBase64Req struct {
+	g.Meta  `path:"/qrcode/getBase64" tags:"qrcode" method:"post" summary:"获取商品详情二维码"`
+	GoodsId int
+}
+
+type GetBase64Res struct {
+	g.Meta     `mime:"json"`
+	Ciphertext string `json:"ciphertext"`
+}
