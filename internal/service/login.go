@@ -10,7 +10,7 @@ type (
 	ILogin interface {
 		AuthLogin(ctx context.Context, code string) (res *model.AuthLogin, err error)
 		WeixinAuth(code string) (res *model.WxOpenAi, err error)
-		UserRegister(ctx context.Context, user *entity.HiolabsUser, openid string) (err error)
+		UserRegister(ctx context.Context, openid string) (user *entity.HiolabsUser, err error)
 		UpdateLogin(ctx context.Context, user *entity.HiolabsUser) (err error)
 		GenerateToken(ctx context.Context, user *model.SignTokenUser) (token string, err error)
 		StorageToken(ctx context.Context, user *model.SignTokenUser, token string) (err error)

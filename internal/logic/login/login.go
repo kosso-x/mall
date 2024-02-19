@@ -52,11 +52,13 @@ func (s *sLogin) AuthLogin(ctx context.Context, code string) (res *model.AuthLog
 	// 注册的标记
 	Is_new := 0
 	dao.HiolabsUser.Ctx(ctx).Where("weixin_openid = ?", wx_resp.Openid).Scan(&h_user)
+
 	if (h_user == nil) || (err != nil) {
 		// 注册
-		s.UserRegister(ctx, h_user, wx_resp.Openid)
+		h_user, err = s.UserRegister(ctx, wx_resp.Openid)
 		Is_new = 1
 	}
+
 	// 更新登录信息
 	s.UpdateLogin(ctx, h_user)
 
@@ -133,7 +135,7 @@ func (s *sLogin) WeixinAuth(code string) (res *model.WxOpenAi, err error) {
 	return
 }
 
-func (s *sLogin) UserRegister(ctx context.Context, user *entity.HiolabsUser, openid string) (err error) {
+func (s *sLogin) UserRegister(ctx context.Context, openid string) (user *entity.HiolabsUser, err error) {
 	// 生成 微信用户 的 base64
 	base_name := "微信用户"
 	nickname := gbase64.EncodeString(base_name)
@@ -145,9 +147,9 @@ func (s *sLogin) UserRegister(ctx context.Context, user *entity.HiolabsUser, ope
 		g.Map{
 			"username":        username,
 			"password":        openid,
-			"register_time":   string(current_time),
+			"register_time":   current_time,
 			"register_ip":     "",
-			"last_login_time": string(current_time),
+			"last_login_time": current_time,
 			"last_login_ip":   "",
 			"mobile":          "",
 			"weixin_openid":   openid,
@@ -156,10 +158,11 @@ func (s *sLogin) UserRegister(ctx context.Context, user *entity.HiolabsUser, ope
 		})
 
 	if err != nil {
-		return gerror.New("登录失败")
+		return nil, gerror.New("登录失败")
 	}
 
 	dao.HiolabsUser.Ctx(ctx).Where("weixin_openid = ?", openid).Scan(&user)
+
 	return
 }
 
